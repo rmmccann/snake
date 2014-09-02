@@ -12,14 +12,14 @@ $(document).ready(function(){
             case 100:
                 direction = 3; break; //d
                 
-            case 38:
-                direction = 0; break; //up
-            case 37:
-                direction = 1; break; //left
-            case 40:
-                direction = 2; break; //down
-            case 39:
-                direction = 3; break; //right
+            case 38: //up
+                if(game.snakeBody.length == 1 || !down()) direction = 0; break;
+            case 37: //left
+                if(game.snakeBody.length == 1 || !right()) direction = 1; break;
+            case 40: //down
+                if(game.snakeBody.length == 1 || !up()) direction = 2; break;
+            case 39: //right
+                if(game.snakeBody.length == 1 || !left()) direction = 3; break;
         }
     });
     
