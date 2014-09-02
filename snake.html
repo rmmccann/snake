@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="http://fonts.googleapis.com/css?family=Orbitron:700" rel="stylesheet" type="text/css">
 	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 	<title>SNAKE</title>
 	<link rel="stylesheet" href="snake.css" />
@@ -9,9 +10,16 @@
 </head>
 <body>
 <a href="https://github.com/rmmccann/snake"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+    
+<div id="score-panel" class="callout-panel">
+    <span class="text-md">Score</span><br>
+    <span class="text-md" id="scoreText">0</span>
+</div>
 
-<canvas id="canvas" width="900px" height="600px"></canvas>
-<span id="text"></span>
+<div id="main-content">
+    <span class="game-title">Snake JS</span>
+    <canvas id="canvas" width="900px" height="600px"></canvas>
+</div>
 
 </body>
 </html>

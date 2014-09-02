@@ -1,6 +1,5 @@
 $(document).ready(function(){
 	$(document).keydown(function(event){
-//        console.log(event.which);
         switch(event.which)
         {
             case 119:
@@ -84,6 +83,7 @@ function update()
     if(posX===pellet.x && posY===pellet.y) //extract to function
     {
         //eat the pellet!
+        game.getFoodPellet();
         
         //make a new one
         pellet = game.createFoodPellet();
@@ -92,15 +92,15 @@ function update()
     {
         game.snakeBody.pop(); //if no pellet, remove the tail
     }
+    
     //check for snake body
-//    if({x:posX, y:posY} in game.snakeBody)
-//    if($.inArray({x:posX, y:posY}, game.snakeBody, 1))
     var tmp = game.snakeBody.indexOf({x:posX, y:posY});
     console.log(tmp);
-//    if(game.snakeBody.indexOf({x:posX, y:posY}) >= 1)
+
     if(game.snakeBody.contains({x:posX, y:posY}))
     {
-        alert("game over");
+        alert("Game Over!");
+        game.reset();
     }
     
     //TODO avoid shift/unshift
@@ -112,26 +112,14 @@ function update()
 //    console.log(posX+ " " + posY);
     
     
-    
-    
     //draw the food pellet
     context.fillStyle = "#FFE48D";
+//    context.fillStyle = "#CCCCCC";
     context.fillRect(pellet.x, pellet.y, width, height);
     
-    
     //draw the "snake"
-    context.fillStyle = "#0000ff";
     context.fillRect(posX, posY, game.blockWidth, game.blockWidth);
     game.drawSnake(context);
-    
-	
-//	var coords = "x: "+mouseX+", y: "+mouseY;
-//	context.fillStyle="#000000";
-//	context.font="20px Arial";
-//	context.fillText(coords, 10, 30);
-	
-//	$("#text").html("<br>" + coords)
-//	.append("<br>radians: " + getRotation(b_x,b_y));
 }
 
 function up(){return direction===0}
@@ -166,6 +154,7 @@ function SnakeGame(width, height)
     SnakeGame.prototype.blockWidth = 15;
     
     SnakeGame.prototype.createFoodPellet = createFoodPellet;
+    SnakeGame.prototype.getFoodPellet = getFoodPellet;
     
     function createFoodPellet()
     {
@@ -176,16 +165,24 @@ function SnakeGame(width, height)
         return {x: randX, y:randY};
     }
     
-    function getFoodPellet()
+    function getFoodPellet() //TODO: rename "eatFoodPellet" ?
     {
         //append to snake
         score++;
+        $("#scoreText").text(score);
         //createFoodPellet()
         //increase speed
     }
     function incrementSpeed()
     {
         
+    }
+    
+    SnakeGame.prototype.reset = function()
+    {
+        score = 0;
+        $("#scoreText").text(0);
+        //reset snakeBody
     }
     
     SnakeGame.prototype.drawSnake = function(context)
