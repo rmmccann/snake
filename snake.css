@@ -2,6 +2,15 @@ body
 {
 	padding: 0px;
 /*	margin: 0px;*/
+    background-color: #FFF6DB;
+    background-color: #FFFBF0;
+}
+
+#main-content
+{
+    width: 900px;
+    margin: auto;
+    padding: 30px;
 }
 
 #canvas
@@ -14,4 +23,34 @@ body
     display: block;
     top: 150px;
     margin: auto;
+}
+
+#score-panel
+{
+    width: 90px;
+    position: absolute;
+}
+
+.callout-panel
+{
+    background-color: #FFFFFF;
+    margin: 10px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+}
+
+.game-title
+{
+    font-family: Orbitron;
+    font-size: 24pt;
+    color: #61A03C;
+}
+
+.text-md
+{
+    font-family: Orbitron;
+    font-size: 16pt;
 }
