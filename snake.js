@@ -94,9 +94,6 @@ function update()
     }
     
     //check for snake body
-    var tmp = game.snakeBody.indexOf({x:posX, y:posY});
-    console.log(tmp);
-
     if(game.snakeBody.contains({x:posX, y:posY}))
     {
         alert("Game Over!");
@@ -183,6 +180,7 @@ function SnakeGame(width, height)
         score = 0;
         $("#scoreText").text(0);
         //reset snakeBody
+        this.snakeBody.splice(0, Number.MAX_VALUE);
     }
     
     SnakeGame.prototype.drawSnake = function(context)
