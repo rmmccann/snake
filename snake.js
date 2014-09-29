@@ -156,8 +156,8 @@ function SnakeGame(width, height)
     function createFoodPellet()
     {
         //naive algoritm -- doesn't check that it is possible to get or not intersecting the snake
-        var randX = Math.round((Math.random()*width)/this.blockWidth)*this.blockWidth;
-        var randY = Math.round((Math.random()*height)/this.blockWidth)*this.blockWidth;
+        var randX = Math.round((Math.random()*(width-this.blockWidth))/this.blockWidth)*this.blockWidth;
+        var randY = Math.round((Math.random()*(height-this.blockWidth))/this.blockWidth)*this.blockWidth;
         
         return {x: randX, y:randY};
     }
