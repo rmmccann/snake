@@ -70,12 +70,7 @@ function update()
 {
 	var canvas = document.getElementById("canvas");
 	var context = canvas.getContext("2d");
-	//context.save();
 	
-	context.setTransform(1,0,0,1,0,0);
-	context.clearRect(0,0,canvas.width,canvas.height);
-    
-    context.fillStyle = "#000000";
     
     //update the square position
     posX += deltaX()+canvas.width;
@@ -106,13 +101,14 @@ function update()
     }
     
     //TODO avoid shift/unshift
-    //remove tail
-//    game.snakeBody.pop();
     //insert as new head
     game.snakeBody.unshift({x:posX, y:posY});
-    //test
-//    console.log(posX+ " " + posY);
     
+    context.clearRect(0,0,canvas.width,canvas.height);
+    
+    //clear background
+    context.fillStyle = "#FFFFFF";
+    context.fillRect(0,0,game.width,game.height);
     
     //draw the food pellet
     context.fillStyle = "#FFE48D";
@@ -143,15 +139,15 @@ function deltaY(){
 }
 
 //Object that controls game logic
-//TODO use prototypes to define methods
 function SnakeGame(width, height)
 {
     //TODO extract snakeBody to new class?
-//    var snakeBody = new Array();
-//    var snakeBody = [{x:0, y:0}];
     SnakeGame.prototype.snakeBody = [{x:0, y:0}];
     
     var score = 0;
+    
+    this.width = width;
+    this.height = height;
     
     SnakeGame.prototype.blockWidth = 15;
     
