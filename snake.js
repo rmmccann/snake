@@ -19,6 +19,11 @@ $(document).ready(function(){
                 if(game.snakeBody.length == 1 || !up()) direction = 2; break;
             case 39: //right
                 if(game.snakeBody.length == 1 || !left()) direction = 3; break;
+
+            case 192: // '`'
+                if(location.protocol !== "file:") return; //only enable debugging for local versions
+                game.debug.duplicateTail(6);
+                game.debug.printFoodLocation();
         }
     });
     
@@ -190,6 +195,23 @@ function SnakeGame(width, height)
         {
             segment = this.snakeBody[segment];
             context.fillRect(segment.x, segment.y, game.blockWidth, game.blockWidth);
+        }
+    }
+
+    SnakeGame.prototype.debug =
+    {
+        duplicateTail: function(numTimes)
+        {
+            var tail = game.snakeBody[game.snakeBody.length-1];
+            for(var i=0; i<numTimes; i++)
+            {
+                game.snakeBody.push(tail);
+            }
+            score+=numTimes;
+        },
+        printFoodLocation: function()
+        {
+            console.log("Food pellet at: (" + pellet.x + ", " + pellet.y + ")");
         }
     }
 }
