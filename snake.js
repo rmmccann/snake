@@ -19,6 +19,11 @@ $(document).ready(function(){
                 if(game.snakeBody.length == 1 || !up()) direction = 2; break;
             case 39: //right
                 if(game.snakeBody.length == 1 || !left()) direction = 3; break;
+
+            case 192: // '`'
+                if(location.protocol !== "file:") return; //only enable debugging for local versions
+                game.debug.duplicateTail(6);
+                game.debug.printFoodLocation();
         }
     });
     
@@ -33,8 +38,8 @@ $(document).ready(function(){
     
     direction = 3;
     
-    var tmpW = 900;
-    var tmpH = 600;
+    var tmpW = 750;
+    var tmpH = 495;
     game = new SnakeGame(tmpW, tmpH);
     pellet = game.createFoodPellet();
     console.log(game);
@@ -52,6 +57,7 @@ var direction;
 var game;
 var pellet;
 
+//specific to this game (assumes all elements are unique {x,y} tuples)
 Array.prototype.contains = function(elem)
 {
     for(var i in this)
@@ -65,12 +71,7 @@ function update()
 {
 	var canvas = document.getElementById("canvas");
 	var context = canvas.getContext("2d");
-	//context.save();
 	
-	context.setTransform(1,0,0,1,0,0);
-	context.clearRect(0,0,canvas.width,canvas.height);
-    
-    context.fillStyle = "#000000";
     
     //update the square position
     posX += deltaX()+canvas.width;
@@ -83,7 +84,7 @@ function update()
     if(posX===pellet.x && posY===pellet.y) //extract to function
     {
         //eat the pellet!
-        game.getFoodPellet();
+        game.eatFoodPellet();
         
         //make a new one
         pellet = game.createFoodPellet();
@@ -94,9 +95,6 @@ function update()
     }
     
     //check for snake body
-    var tmp = game.snakeBody.indexOf({x:posX, y:posY});
-    console.log(tmp);
-
     if(game.snakeBody.contains({x:posX, y:posY}))
     {
         alert("Game Over!");
@@ -104,13 +102,14 @@ function update()
     }
     
     //TODO avoid shift/unshift
-    //remove tail
-//    game.snakeBody.pop();
     //insert as new head
     game.snakeBody.unshift({x:posX, y:posY});
-    //test
-//    console.log(posX+ " " + posY);
     
+    context.clearRect(0,0,canvas.width,canvas.height);
+    
+    //clear background
+    context.fillStyle = "#FFFFFF";
+    context.fillRect(0,0,game.width,game.height);
     
     //draw the food pellet
     context.fillStyle = "#FFE48D";
@@ -141,31 +140,41 @@ function deltaY(){
 }
 
 //Object that controls game logic
-//TODO use prototypes to define methods
 function SnakeGame(width, height)
 {
     //TODO extract snakeBody to new class?
-//    var snakeBody = new Array();
-//    var snakeBody = [{x:0, y:0}];
     SnakeGame.prototype.snakeBody = [{x:0, y:0}];
     
     var score = 0;
     
+    this.width = width;
+    this.height = height;
+    
     SnakeGame.prototype.blockWidth = 15;
     
     SnakeGame.prototype.createFoodPellet = createFoodPellet;
-    SnakeGame.prototype.getFoodPellet = getFoodPellet;
+    SnakeGame.prototype.eatFoodPellet = eatFoodPellet;
     
     function createFoodPellet()
     {
-        //naive algoritm -- doesn't check that it is possible to get or not intersecting the snake
-        var randX = Math.round((Math.random()*width)/this.blockWidth)*this.blockWidth;
-        var randY = Math.round((Math.random()*height)/this.blockWidth)*this.blockWidth;
+        /*
+		naive algoritm
+		-make sure pellet is within game bounds
+		-as snake gets larger, more collisions will occur
+		*/
+        var randX = Math.round((Math.random()*(width-this.blockWidth))/this.blockWidth)*this.blockWidth;
+        var randY = Math.round((Math.random()*(height-this.blockWidth))/this.blockWidth)*this.blockWidth;
+		var newPellet = {x: randX, y:randY};
+		
+		//if the snake is already occupying that position, recurse and generate a different point
+		if(this.snakeBody.contains(newPellet)) {
+			newPellet = createFoodPellet();
+		}
         
-        return {x: randX, y:randY};
+        return newPellet;
     }
     
-    function getFoodPellet() //TODO: rename "eatFoodPellet" ?
+    function eatFoodPellet()
     {
         //append to snake
         score++;
@@ -183,6 +192,7 @@ function SnakeGame(width, height)
         score = 0;
         $("#scoreText").text(0);
         //reset snakeBody
+        this.snakeBody.splice(0, Number.MAX_VALUE);
     }
     
     SnakeGame.prototype.drawSnake = function(context)
@@ -192,6 +202,23 @@ function SnakeGame(width, height)
         {
             segment = this.snakeBody[segment];
             context.fillRect(segment.x, segment.y, game.blockWidth, game.blockWidth);
+        }
+    }
+
+    SnakeGame.prototype.debug =
+    {
+        duplicateTail: function(numTimes)
+        {
+            var tail = game.snakeBody[game.snakeBody.length-1];
+            for(var i=0; i<numTimes; i++)
+            {
+                game.snakeBody.push(tail);
+            }
+            score+=numTimes;
+        },
+        printFoodLocation: function()
+        {
+            console.log("Food pellet at: (" + pellet.x + ", " + pellet.y + ")");
         }
     }
 }
