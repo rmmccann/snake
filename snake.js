@@ -38,8 +38,8 @@ $(document).ready(function(){
     
     direction = 3;
     
-    var tmpW = 900;
-    var tmpH = 600;
+    var tmpW = 750;
+    var tmpH = 495;
     game = new SnakeGame(tmpW, tmpH);
     pellet = game.createFoodPellet();
     console.log(game);
@@ -57,6 +57,7 @@ var direction;
 var game;
 var pellet;
 
+//specific to this game (assumes all elements are unique {x,y} tuples)
 Array.prototype.contains = function(elem)
 {
     for(var i in this)
@@ -83,7 +84,7 @@ function update()
     if(posX===pellet.x && posY===pellet.y) //extract to function
     {
         //eat the pellet!
-        game.getFoodPellet();
+        game.eatFoodPellet();
         
         //make a new one
         pellet = game.createFoodPellet();
@@ -152,18 +153,28 @@ function SnakeGame(width, height)
     SnakeGame.prototype.blockWidth = 15;
     
     SnakeGame.prototype.createFoodPellet = createFoodPellet;
-    SnakeGame.prototype.getFoodPellet = getFoodPellet;
+    SnakeGame.prototype.eatFoodPellet = eatFoodPellet;
     
     function createFoodPellet()
     {
-        //naive algoritm -- doesn't check that it is possible to get or not intersecting the snake
+        /*
+		naive algoritm
+		-make sure pellet is within game bounds
+		-as snake gets larger, more collisions will occur
+		*/
         var randX = Math.round((Math.random()*(width-this.blockWidth))/this.blockWidth)*this.blockWidth;
         var randY = Math.round((Math.random()*(height-this.blockWidth))/this.blockWidth)*this.blockWidth;
+		var newPellet = {x: randX, y:randY};
+		
+		//if the snake is already occupying that position, recurse and generate a different point
+		if(this.snakeBody.contains(newPellet)) {
+			newPellet = createFoodPellet();
+		}
         
-        return {x: randX, y:randY};
+        return newPellet;
     }
     
-    function getFoodPellet() //TODO: rename "eatFoodPellet" ?
+    function eatFoodPellet()
     {
         //append to snake
         score++;
